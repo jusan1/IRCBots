@@ -23,8 +23,8 @@ with open(r'config.json') as file:
 class BattleshipBot(irc.IRCClient):
     nickname = config['nick']
 
-    #def __init__(self):
-
+    def __init__(self):
+        self.board = ["??????????","??????????","??????????","??????????","??????????","??????????","??????????","??????????","??????????","??????????"]
 
     def signedOn(self):
         self.join(config['channel'])
@@ -51,9 +51,14 @@ class BattleshipBot(irc.IRCClient):
 
         if self.isHelpCommand(message):
             self.printHelpMessage()
+        elif self.isBoardCommand(message):
+            self.printBoard()
 
     def isHelpCommand(self, message):
         return re.match('^' + config['nick'] + ',\s+help$', message)
+
+    def isBoardCommand(self, message):
+        return re.match('^' + config['nick'] + ',\s+board$', message)
 
     def isListTagsCommand(self, message):
         return re.match('^' + config['nick'] + ',\s+list-tags$', message)
@@ -61,9 +66,18 @@ class BattleshipBot(irc.IRCClient):
     def printHelpMessage(self):
 
         self.msg(config['channel'], 'Please use one of the following commands:')
-        self.msg(config['channel'], 'artBot, help: Ask me for help')
-        self.msg(config['channel'], 'artBot, paint <tag>: Paint ASCII message by tag (random by default)')
-        self.msg(config['channel'], 'artBot, list-tags: Lists all message tags for painting')
+        self.msg(config['channel'], 'battleship, help: Ask me for help')
+        #self.msg(config['channel'], 'battleship, start: starts the game')
+        #self.msg(config['channel'], 'batlleship, register <name>: registers your username as one of the active players')
+        #self.msg(config['channel'], 'battleship, turn: displays the username of the turn')
+        self.msg(config['channel'], 'battleship, board: displays current play state of the board')
+        #self.msg(config['channel'], 'batlleship, hit <coordinate>: hits the coordinate of your choice')
+
+    def printBoard(self):
+        self.msg(config['channel'], " ----------")
+        for x in range(0,10):
+            self.msg(config['channel'], "|"+self.board[x]+"|")
+        self.msg(config['channel'], " ----------")
 
 def main():
     server = config['server']
